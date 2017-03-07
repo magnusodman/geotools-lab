@@ -24,12 +24,7 @@ public class GeotoolsTripRepository implements TripRepository {
 
   public GeotoolsTripRepository() throws SchemaException {
 
-    TRIP_TYPE = DataUtilities.createType("Trip",
-        "start_point:Point:srid=4326," + // <- the geometry attribute: Point type
-            "stop_point:Point:srid=4326," + //
-            "vin:String," +   // <- a String attribute
-            "passenger_count:Integer"   // a number attribute
-    );
+    TRIP_TYPE = DataUtilities.createType("Trip", "start_point:Point:srid=4326,stop_point:Point:srid=4326,vin:String,passenger_count:Integer");
 
      featureBuilder = new SimpleFeatureBuilder(TRIP_TYPE);
   }
