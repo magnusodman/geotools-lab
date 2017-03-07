@@ -6,7 +6,7 @@ import java.util.Collection;
 
 public interface TripRepository {
 
-  void saveTrip(Trip trip);
+  void saveTrip(Trip trip) throws IOException;
 
   Collection<Trip> getTripsForVIN(String vin) throws IOException;
 }

@@ -51,7 +51,7 @@ public class GeotoolsTripRepository implements TripRepository {
   }
 
   @Override
-  public void saveTrip(Trip trip) {
+  public void saveTrip(Trip trip) throws IOException {
 
     double startLatitude = trip.getStartCoordinate().getLatitude();
     double startLongitude = trip.getStartCoordinate().getLongitude();
@@ -80,12 +80,10 @@ public class GeotoolsTripRepository implements TripRepository {
       Transaction transaction = new DefaultTransaction("create");
       SimpleFeatureCollection collection = new ListFeatureCollection(TRIP_TYPE, Collections.singletonList(feature));
 
-      try {
-        featureStore.addFeatures(collection);
-        transaction.commit();
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
+
+      featureStore.addFeatures(collection);
+      transaction.commit();
+
     } else {
       String message = String.format("Failed to save Trip. %s is not an instance of %s", featureSource.getClass().getName(), FeatureStore.class.getName());
       logger.error(message);
@@ -101,7 +99,7 @@ public class GeotoolsTripRepository implements TripRepository {
     Filter filter = ff.equals(ff.property( "vin"), ff.literal( searchVin ) );
 
     SimpleFeatureCollection collection = featureSource.getFeatures(filter);
-    
+
     List<Trip> tripsForVIN = new ArrayList<>();
 
     SimpleFeatureIterator it = null;

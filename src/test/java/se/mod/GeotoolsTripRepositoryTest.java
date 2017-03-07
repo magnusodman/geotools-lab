@@ -33,8 +33,7 @@ public class GeotoolsTripRepositoryTest {
   }
 
   @Test
-  public void saveTrip_NoExceptions() {
-
+  public void saveTrip_NoExceptions() throws Exception {
     Trip trip = createTestTrip();
     tripRepository.saveTrip(trip);
 
@@ -42,7 +41,6 @@ public class GeotoolsTripRepositoryTest {
 
   @Test
   public void getTripForVIN_OneTripPresent() throws Exception {
-
     Trip trip = createTestTripForVIN(TEST_VIN);
     tripRepository.saveTrip(trip);
 
