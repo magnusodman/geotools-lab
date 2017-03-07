@@ -32,13 +32,12 @@ public class GeotoolsTripRepository implements TripRepository {
 
   private final static Logger logger = LoggerFactory.getLogger(GeotoolsTripRepository.class);
 
-  public static final String TRIP_TYPE_NAME = "Trip";
+  private static final String TRIP_TYPE_NAME = "Trip";
   public static final String TRIP_TYPE_SPEC = "start_point:Point:srid=4326,stop_point:Point:srid=4326,vin:String,passenger_count:Integer,log_date:Date";
-  final SimpleFeatureType TRIP_TYPE;
+  private final SimpleFeatureType TRIP_TYPE;
   private final SimpleFeatureSource featureSource;
 
-  GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory();
-  final private DataStore dataStore;
+  private final GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory();
   final private SimpleFeatureBuilder featureBuilder;
 
 
@@ -47,8 +46,8 @@ public class GeotoolsTripRepository implements TripRepository {
     TRIP_TYPE = DataUtilities.createType(TRIP_TYPE_NAME,
         TRIP_TYPE_SPEC);
     featureBuilder = new SimpleFeatureBuilder(TRIP_TYPE);
-    this.dataStore = dataStore;
     this.featureSource = dataStore.getFeatureSource(TRIP_TYPE_NAME);
+
   }
 
   @Override
@@ -97,39 +96,29 @@ public class GeotoolsTripRepository implements TripRepository {
 
   @Override
   public Collection<Trip> getTripsForVIN(String searchVin) throws IOException {
-    String[] typeNames = dataStore.getTypeNames();
-    SimpleFeatureSource featureSource1 = dataStore.getFeatureSource(typeNames[0]);
 
-    /*
-    FeatureSource	View
-    FeatureStore	Table
-    FeatureCollection	PreparedStatement
-    FeatureIterator	ResultSet
-    */
-    SimpleFeatureSource source = dataStore.getFeatureSource(TRIP_TYPE_NAME);
     FilterFactory ff = CommonFactoryFinder.getFilterFactory( null );
     Filter filter = ff.equals(ff.property( "vin"), ff.literal( searchVin ) );
 
-    SimpleFeatureCollection collection = source.getFeatures(filter);
-
-
+    SimpleFeatureCollection collection = featureSource.getFeatures(filter);
+    
     List<Trip> tripsForVIN = new ArrayList<>();
 
     SimpleFeatureIterator it = null;
     try {
       for (it = collection.features(); it.hasNext(); ) {
         SimpleFeature feature = it.next();
-          String vin = feature.getAttribute("vin").toString();
-          Point startPoint = (Point) feature.getAttribute("start_point");
-          Coordinate startCoordinate = new Coordinate(startPoint.getX(), startPoint.getY());
-          Point stopPoint = (Point) feature.getAttribute("stop_point");
-          Coordinate stopCoordinate = new Coordinate(stopPoint.getX(), stopPoint.getY());
-          int passengerCount = (int) feature.getAttribute("passenger_count");
-          Date logDate = (Date) feature.getAttribute("log_date");
+        String vin = feature.getAttribute("vin").toString();
+        Point startPoint = (Point) feature.getAttribute("start_point");
+        Coordinate startCoordinate = new Coordinate(startPoint.getX(), startPoint.getY());
+        Point stopPoint = (Point) feature.getAttribute("stop_point");
+        Coordinate stopCoordinate = new Coordinate(stopPoint.getX(), stopPoint.getY());
+        int passengerCount = (int) feature.getAttribute("passenger_count");
+        Date logDate = (Date) feature.getAttribute("log_date");
 
-          Trip trip = new Trip(vin, startCoordinate, stopCoordinate, passengerCount, logDate);
-          tripsForVIN.add(trip);
-        //}
+        Trip trip = new Trip(vin, startCoordinate, stopCoordinate, passengerCount, logDate);
+        tripsForVIN.add(trip);
+
       }
     } finally {
       if (it != null) {

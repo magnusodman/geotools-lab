@@ -17,7 +17,7 @@ public class GeotoolsTripRepositoryTest {
 
   private static final String TEST_VIN = "TESTVIN";
 
-  TripRepository tripRepository;
+  private TripRepository tripRepository;
 
   @Before
   public void setupRepository() throws Exception {

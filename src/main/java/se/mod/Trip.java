@@ -8,7 +8,7 @@ import java.util.Date;
 public class Trip {
 
   private final Date logDate;
-  private String vin;
+  private final String vin;
   private final Coordinate startCoordinate;
   private final Coordinate stopCoordinate;
   private final int passengerCount;
